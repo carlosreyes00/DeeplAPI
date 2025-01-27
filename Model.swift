@@ -9,8 +9,8 @@ import Foundation
 
 class TranslationAPI {
     
-    static func Translate(textToTranlate: String) async throws -> String {
-        print("Started running the function")
+    static func translate(textToTranlate: String) async throws -> String {
+        print("...trying to translate: \(textToTranlate)")
         
         let apiKey = "da92502c-e4fe-44e6-b608-e74aaa48d87a:fx"
         
@@ -42,9 +42,11 @@ class TranslationAPI {
             throw CustomError.HTTPResponse
         }
         
-        let translation = try JSONSerialization.jsonObject(with: data) as? String
+        //        let translation = try JSONSerialization.jsonObject(with: data) as? String
+        let translation = try JSONDecoder().decode(TranslationsResponse.self, from: data)
+        //        return translation ?? "Not able to serializate JSON"
+        return translation.translations.first?.text ?? "something went wrong"
         
-        return translation ?? "Not able to serializate JSON"
     }
 }
 
@@ -68,4 +70,18 @@ enum CustomError: Error {
     case URLCreation
     case HTTPResponse
     case JSONSerialization
+}
+
+struct TranslationsResponse: Codable {
+    let translations: [Translation]
+}
+
+struct Translation: Codable {
+    let detectedSourceLanguage: String
+    let text: String
+    
+    enum CodingKeys: String, CodingKey {
+        case detectedSourceLanguage = "detected_source_language"
+        case text
+    }
 }
