@@ -9,7 +9,7 @@ import Foundation
 
 class TranslationAPI {
     
-    static func translate(textToTranlate: String) async throws -> String {
+    static func translate(textToTranlate: String, targetLang: String = "EN-US") async throws -> String {
         print("...trying to translate: \(textToTranlate)")
         
         let apiKey = "da92502c-e4fe-44e6-b608-e74aaa48d87a:fx"
@@ -31,7 +31,7 @@ class TranslationAPI {
         
         let body: [String: Any] = [
             "text": ["\(textToTranlate)"],
-            "target_lang": "EN-US"
+            "target_lang": "\(targetLang)"
         ]
         
         request.httpBody = try JSONSerialization.data(withJSONObject: body)
